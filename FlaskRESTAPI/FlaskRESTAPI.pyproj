@@ -7,7 +7,8 @@
     <ProjectGuid>3205223d-847b-4570-989c-d39f344bfca0</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <ProjectTypeGuids>{789894c7-04a9-4a11-a6b5-3f4435165112};{1b580a1a-fdb3-4b32-83e1-6407eb2722e6};{349c5851-65df-11da-9384-00065b846f21};{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
-    <StartupFile>runserver.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -28,12 +29,59 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="runserver.py" />
+    <Compile Include="app.py" />
+    <Compile Include="config.py" />
+    <Compile Include="FlaskRESTAPI\decorators\after_request.py" />
+    <Compile Include="FlaskRESTAPI\decorators\before_request.py" />
+    <Compile Include="FlaskRESTAPI\decorators\login_required.py" />
+    <Compile Include="FlaskRESTAPI\decorators\roles_required.py" />
+    <Compile Include="FlaskRESTAPI\helper\status.py" />
+    <Compile Include="FlaskRESTAPI\message_sender\broker.py" />
+    <Compile Include="FlaskRESTAPI\models\Job.py" />
+    <Compile Include="FlaskRESTAPI\models\Process_output.py" />
+    <Compile Include="FlaskRESTAPI\models\Role.py" />
+    <Compile Include="FlaskRESTAPI\models\Task.py" />
+    <Compile Include="FlaskRESTAPI\models\User.py" />
+    <Compile Include="FlaskRESTAPI\response\response.py" />
+    <Compile Include="FlaskRESTAPI\routes\automagica_browser.py" />
+    <Compile Include="FlaskRESTAPI\routes\cba_admission.py" />
+    <Compile Include="FlaskRESTAPI\routes\cba_admission_excel.py" />
+    <Compile Include="FlaskRESTAPI\routes\cba_msig.py" />
+    <Compile Include="FlaskRESTAPI\routes\cba_reqdca.py" />
+    <Compile Include="FlaskRESTAPI\routes\credit_control.py" />
+    <Compile Include="FlaskRESTAPI\routes\data_migration_client_master.py" />
+    <Compile Include="FlaskRESTAPI\routes\data_migration_disbursement_master.py" />
+    <Compile Include="FlaskRESTAPI\routes\data_migration_req.py" />
+    <Compile Include="FlaskRESTAPI\routes\dm_stp.py" />
+    <Compile Include="FlaskRESTAPI\routes\dm_stpcreatedir.py" />
+    <Compile Include="FlaskRESTAPI\routes\dm_validate_8_functions.py" />
+    <Compile Include="FlaskRESTAPI\routes\finance_ar.py" />
+    <Compile Include="FlaskRESTAPI\routes\finance_soa.py" />
+    <Compile Include="FlaskRESTAPI\routes\finance_updatecml.py" />
+    <Compile Include="FlaskRESTAPI\routes\finance_update_max.py" />
+    <Compile Include="FlaskRESTAPI\routes\login.py" />
+    <Compile Include="FlaskRESTAPI\routes\mediclinic.py" />
+    <Compile Include="FlaskRESTAPI\routes\mediclinic_crm.py" />
+    <Compile Include="FlaskRESTAPI\routes\mediclinic_kpi.py" />
+    <Compile Include="FlaskRESTAPI\routes\mediclinic_mos.py" />
+    <Compile Include="FlaskRESTAPI\routes\ocr\img_clsfctn_api.py" />
+    <Compile Include="FlaskRESTAPI\routes\print_listing.py" />
+    <Compile Include="FlaskRESTAPI\routes\register.py" />
+    <Compile Include="FlaskRESTAPI\routes\spreadsheet.py" />
+    <Compile Include="FlaskRESTAPI\routes\trigger_service.py" />
     <Compile Include="FlaskRESTAPI\__init__.py" />
     <Compile Include="FlaskRESTAPI\views.py" />
+    <Compile Include="setup.py" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="FlaskRESTAPI\" />
+    <Folder Include="FlaskRESTAPI\decorators\" />
+    <Folder Include="FlaskRESTAPI\helper\" />
+    <Folder Include="FlaskRESTAPI\message_sender\" />
+    <Folder Include="FlaskRESTAPI\models\" />
+    <Folder Include="FlaskRESTAPI\response\" />
+    <Folder Include="FlaskRESTAPI\routes\" />
+    <Folder Include="FlaskRESTAPI\routes\ocr\" />
     <Folder Include="FlaskRESTAPI\static\" />
     <Folder Include="FlaskRESTAPI\static\content\" />
     <Folder Include="FlaskRESTAPI\static\fonts\" />

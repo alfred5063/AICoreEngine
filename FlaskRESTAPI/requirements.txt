@@ -1,1 +1,34 @@
-Flask~=1.1
+# UPDATED ON 14th January 2021
+
+asn1crypto==1.2.0
+cffi==1.13.2
+cryptography==2.8
+Flask==1.1.1
+Flask-SQLAlchemy==2.4.1
+pika==1.1.0
+psycopg2==2.8.4
+PyJWT==1.7.1
+flask-swagger-ui==3.20.9
+
+# Lib for RPA.DTI
+xlrd==1.2.0
+pyodbc==4.0.27
+openpyxl==2.4.8
+pycryptodome==3.9.4
+pymysql==0.9.3
+xlwt==1.3.0
+xlutils==2.0.0
+pymssql==2.1.4
+regex==2019.12.19
+wxpython==4.0.7.post2
+selenium-move-cursor==0.0.8
+pynput==1.6.0
+winregistry==0.8.3
+pywin32
+keyboard==0.13.4
+pywinauto==0.6.5
+num2words==0.5.10
+docx2pdf==0.1.7
+
+# DO NOT INSTALL THESE:
+# automagica==1.0.11

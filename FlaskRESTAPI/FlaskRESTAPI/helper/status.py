@@ -1,0 +1,5 @@
+SUCCESS = 'success'
+FAIL = 'fail'
+CREATED = 'created'
+FINISHED = 'finished'
+IN_PROGRESS = 'in_progress'
