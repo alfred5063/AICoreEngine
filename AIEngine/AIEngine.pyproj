@@ -4,13 +4,15 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>722fe8e0-49d1-47be-982d-da35a9a9f64e</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>AIEngine.py</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>AIEngine</Name>
     <RootNamespace>AIEngine</RootNamespace>
+    <InterpreterId>CondaEnv|CondaEnv|myworkspace</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,8 +23,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AIEngine.py" />
     <Compile Include="analytics\marc_analytics.py" />
+    <Compile Include="analytics\xray_preprocessing.py" />
     <Compile Include="automagic\automagica_arrpa.py" />
     <Compile Include="automagic\automagica_common.py" />
     <Compile Include="automagic\automagica_creditcontrol.py" />
@@ -228,6 +230,9 @@
     <Content Include="transformation\IEDriverServer32bit.exe" />
     <Content Include="transformation\msedgedriver.exe" />
     <Content Include="utils\smalllogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="CondaEnv|CondaEnv|myworkspace" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
