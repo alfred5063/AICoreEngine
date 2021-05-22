@@ -12,7 +12,8 @@
     <OutputPath>.</OutputPath>
     <Name>AIEngine</Name>
     <RootNamespace>AIEngine</RootNamespace>
-    <InterpreterId>CondaEnv|CondaEnv|myworkspace</InterpreterId>
+    <InterpreterId>
+    </InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -230,9 +231,6 @@
     <Content Include="transformation\IEDriverServer32bit.exe" />
     <Content Include="transformation\msedgedriver.exe" />
     <Content Include="utils\smalllogo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <InterpreterReference Include="CondaEnv|CondaEnv|myworkspace" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
