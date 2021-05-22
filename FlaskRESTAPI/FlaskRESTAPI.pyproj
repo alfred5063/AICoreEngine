@@ -18,7 +18,7 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>FlaskRESTAPI</Name>
     <RootNamespace>FlaskRESTAPI</RootNamespace>
-    <InterpreterId>CondaEnv|CondaEnv|myworkspace</InterpreterId>
+    <InterpreterId>CondaEnv|CondaEnv|myenvr</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -118,6 +118,7 @@
     <Content Include="FlaskRESTAPI\templates\layout.html" />
   </ItemGroup>
   <ItemGroup>
+    <InterpreterReference Include="CondaEnv|CondaEnv|myenvr" />
     <InterpreterReference Include="CondaEnv|CondaEnv|myworkspace" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
