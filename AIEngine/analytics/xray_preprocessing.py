@@ -45,9 +45,10 @@ from keras.preprocessing.image import ImageDataGenerator,array_to_img
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping,ModelCheckpoint
 from keras.metrics import PrecisionAtRecall,Recall
 
-#Model Analysis
+# Model Analysis
 from sklearn.metrics import confusion_matrix
 
+# Warnings
 filterwarnings("ignore",category = DeprecationWarning)
 filterwarnings("ignore", category = FutureWarning) 
 filterwarnings("ignore", category = UserWarning)
@@ -85,7 +86,7 @@ Complementary information on Age, Gender or Weight of patients samples could be 
 Not to mention, that additional information could be extremly important for the Machine Learning model.
 '''
 
-#Samples per class
+# Samples per class
 plt.figure(figsize=(20,8))
 sns.set(style="ticks", font_scale = 1)
 ax = sns.countplot(data = covidData,x='Class',order = covidData['Class'].value_counts().index,palette="flare")
@@ -125,7 +126,7 @@ and their respective classes. First, let's have a look at a random sample and ex
 
 covidData['image'] = covidData['path'].map(lambda x: np.asarray(Image.open(x).resize((75,75))))
 
-#Image Sampling
+# Image Sampling
 n_samples = 3
 fig, m_axs = plt.subplots(4, n_samples, figsize = (4*n_samples, 3*4))
 for n_axs, (type_name, type_rows) in zip(m_axs,covidData.sort_values(['diag']).groupby('diag')):
@@ -163,7 +164,6 @@ print('Image Data Type {}'.format(image.dtype))
 print('Maximum RGB value in this image {}'.format(image.max()))
 print('Minimum RGB value in this image {}'.format(image.min()))
 
-
 '''
 Even though the images are in greyscale, they present the three channels.
 The output below is an unique pixel of the image array at [0,0], we see that all colour channels have the same value.
@@ -177,7 +177,6 @@ plt.title('B channel',fontsize = 14,weight = 'bold')
 plt.imshow(image[ : , : , 0])
 plt.axis('off');
 plt.show()
-
 
 # Image colors analysis
 '''
@@ -202,10 +201,8 @@ imageEDA['mean'] = mean_val
 imageEDA['stedev'] = std_dev_val
 imageEDA['max'] = max_val
 imageEDA['min'] = min_val
-
 subt_mean_samples = imageEDA['mean'].mean() - imageEDA['mean']
 imageEDA['subt_mean'] = subt_mean_samples
-
 ax = sns.displot(data = imageEDA, x = 'mean', kind="kde");
 plt.title('Images Colour Mean Value Distribution', fontsize = 16,weight = 'bold');
 ax = sns.displot(data = imageEDA, x = 'mean', kind="kde", hue = 'Class');
@@ -282,7 +279,6 @@ for x0, y0, path in zip(DF_sample['mean'], DF_sample['stedev'],paths):
     ab = AnnotationBbox(getImage(path), (x0, y0), frameon=False)
     ax.add_artist(ab)
 
-
 '''
 Even though we could use our imagination to understand what it meant to have high or low mean values,
 the visualisation above really helps to grasp the concept. Following the X-Axis, the images have a crescent brightness increase as they present higher mean values
@@ -290,8 +286,6 @@ Higher standard deviations are linked to images with high contrast and a more do
 The outliers at low standard deviation and near the 75 are from Covid-19. It seems like a little data cluster at that region
 More insights could be available by performing the plot by class
 '''
-
-
 
 # 3. CNN Model
 '''
@@ -316,11 +310,9 @@ train_datagen = ImageDataGenerator(rescale=1./255,
                                    height_shift_range=0.2,
                                    horizontal_flip=True,
                                    validation_split=0.2)
-
 val_datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
 
-
-#load the images to training
+# load the images to training
 train_gen = train_datagen.flow_from_directory(directory=path, 
                                               target_size=(299, 299),
                                               class_mode='categorical',
@@ -328,7 +320,8 @@ train_gen = train_datagen.flow_from_directory(directory=path,
                                               shuffle=True, classes=classes,
                                               batch_size=batch_size, 
                                               color_mode="grayscale")
-#load the images to test
+
+# load the images to test
 test_gen = val_datagen.flow_from_directory(directory=path, 
                                               target_size=(299, 299),
                                               class_mode='categorical',
@@ -338,45 +331,34 @@ test_gen = val_datagen.flow_from_directory(directory=path,
                                               color_mode="grayscale")
 
 # CNN Architecture
-
 model = Sequential()
 model.add(Conv2D(32, kernel_size=(3, 3),activation='relu',padding = 'Same',input_shape=(299, 299, 1)))
 model.add(BatchNormalization())
-##############################
 model.add(Conv2D(64, (3, 3), activation='relu',padding = 'Same'))
 model.add(BatchNormalization())
 model.add(AveragePooling2D(pool_size = (2, 2)))
 model.add(Dropout(0.25))
-
 model.add(Conv2D(64, (3, 3), activation='relu',padding = 'Same'))
 model.add(BatchNormalization())
-
 model.add(Conv2D(64, (3, 3), activation='relu',padding = 'Same'))
 model.add(BatchNormalization())
 model.add(AveragePooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
-##############################
 model.add(Conv2D(64, (3, 3), activation='relu',padding = 'Same'))
 model.add(BatchNormalization())
 model.add(AveragePooling2D(pool_size = (2, 2)))
 model.add(Dropout(0.25))
-
 model.add(Conv2D(64, (3, 3), activation='relu',padding = 'Same'))
 model.add(BatchNormalization())
-
 model.add(Conv2D(64, (3, 3), activation='relu',padding = 'Same'))
 model.add(BatchNormalization())
 model.add(AveragePooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
-##############################
 model.add(Flatten())
-
 model.add(BatchNormalization())
 model.add(Dense(128, activation='relu'))
 model.add(Activation('relu'))
 model.add(Dropout(0.25))
-
-#Output
 model.add(BatchNormalization())
 model.add(Dense(num_classes, activation='softmax'))
 opt = Adam(lr=0.005, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.01, amsgrad=False)
@@ -394,7 +376,8 @@ Even though I did not use any optimised hyperparameters tuning, the batch_size w
 # Model Parameters
 epochs = 1000
 batch_size = 16
-#Callbacks
+
+# Callbacks
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_loss', patience=10, verbose=0, factor=0.5, min_lr=0.00001)
 early_stopping_monitor = EarlyStopping(patience=100,monitor='val_loss', mode = 'min',verbose=0)
 
@@ -410,12 +393,9 @@ history = model.fit(train_gen, steps_per_epoch=len(train_gen) // batch_size,
                                 verbose=0)
 
 y_pred = model.predict(test_gen)
-
 fig, axarr = plt.subplots(1,3, figsize=(15,5),sharex=True)
-
 sns.set(style="ticks", font_scale = 1)
 sns.despine(top=True, right=True, left=False, bottom=False)
-
 historyDF = pd.DataFrame.from_dict(history.history)
 dfs = ['loss','recall','val_loss','val_recall','lr']
 ax = sns.lineplot(x =historyDF.index, y = history.history['recall'],ax=axarr[0],label="Training");
@@ -437,7 +417,6 @@ plt.suptitle('Training Performance Plots',fontsize=16, weight = 'bold');
 fig.tight_layout(pad=3.0)      
 plt.show()
 
-
 '''
 What we know so far
 - Peaks and Valleys of the initial training phase indicate several local optima the model has encountered
@@ -446,8 +425,6 @@ What we know so far
 - Training the model for fewer epochs, we would be probably stuck in a Local Optima and fail to generalise to new samples
 - There is a clear link between the Learning Rate reduction and the model being able to converge to a more stable solution
 '''
-
-
 
 # 4. Results and Conclusion
 '''
@@ -463,13 +440,10 @@ plt.figure(figsize=(12, 6))
 ax = sns.heatmap(CMatrix, annot = True, fmt = 'g' ,vmin = 0, vmax = 250,cmap = 'Blues')
 ax.set_xlabel('Predicted',fontsize = 14,weight = 'bold')
 ax.set_xticklabels(ax.get_xticklabels(),rotation =0);
-
 ax.set_ylabel('Actual',fontsize = 14,weight = 'bold') 
 ax.set_yticklabels(ax.get_yticklabels(),rotation =0);
 ax.set_title('Confusion Matrix - Test Set',fontsize = 16,weight = 'bold',pad=20);
-
 keras.backend.clear_session()
-
 
 '''
 Overall, the model can identify the samples, i.e. there is a good amount of TP
@@ -484,7 +458,6 @@ from sklearn.metrics import precision_recall_fscore_support, accuracy_score
 acc = accuracy_score(y_true, predictions)
 results_all = precision_recall_fscore_support(y_true, predictions, average='macro',zero_division = 1)
 results_class = precision_recall_fscore_support(y_true, predictions, average=None, zero_division = 1)
-
 metric_columns = ['Precision','Recall', 'F-Score','S']
 all_df = pd.concat([pd.DataFrame(list(results_class)).T,pd.DataFrame(list(results_all)).T])
 all_df.columns = metric_columns
@@ -512,7 +485,6 @@ print('Accuracy Result: %.2f%%'%(acc*100))
 print('Precision Result: %.2f%%'%(all_df.iloc[4,0]*100))
 print('Recall Result: %.2f%%'%(all_df.iloc[4,1]*100))
 print('F-Score Result: %.2f%%'%(all_df.iloc[4,2]*100))
-
 
 '''
 What we achieved so far
