@@ -24,6 +24,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="analytics\marc_analytics.py" />
+    <Compile Include="analytics\xray_singleprediction.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="analytics\xray_prediction.py">
       <SubType>Code</SubType>
     </Compile>
