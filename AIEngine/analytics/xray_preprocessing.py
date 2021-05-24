@@ -1,3 +1,5 @@
+# Covid-19 Detection from Chest Xray using CNN Model
+
 '''
 This notebook uses ML to predict positive cases of Covid-19 given X-ray images. Since the first publication in March 2020,
 this dataset continues to updated fed with additional images making it an exciting ML problem.
@@ -382,7 +384,7 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='val_loss', patience=10, ver
 early_stopping_monitor = EarlyStopping(patience=100,monitor='val_loss', mode = 'min',verbose=0)
 
 # define the checkpoint
-filepath = "model.h5"
+filepath = "D:\ALFRED - Workspace\Analytics\model.h5"
 checkpoint = ModelCheckpoint(filepath, monitor='loss', verbose=0, save_best_only=True, mode='min')
 callbacks_list = [checkpoint,learning_rate_reduction,early_stopping_monitor]
 

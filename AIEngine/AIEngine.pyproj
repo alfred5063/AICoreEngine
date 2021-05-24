@@ -12,8 +12,7 @@
     <OutputPath>.</OutputPath>
     <Name>AIEngine</Name>
     <RootNamespace>AIEngine</RootNamespace>
-    <InterpreterId>
-    </InterpreterId>
+    <InterpreterId>CondaEnv|CondaEnv|myenvr</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,6 +24,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="analytics\marc_analytics.py" />
+    <Compile Include="analytics\xray_prediction.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="analytics\xray_preprocessing.py" />
     <Compile Include="automagic\automagica_arrpa.py" />
     <Compile Include="automagic\automagica_common.py" />
@@ -231,6 +233,9 @@
     <Content Include="transformation\IEDriverServer32bit.exe" />
     <Content Include="transformation\msedgedriver.exe" />
     <Content Include="utils\smalllogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="CondaEnv|CondaEnv|myenvr" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
