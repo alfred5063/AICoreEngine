@@ -11,48 +11,57 @@ import pandas as pd
 import numpy as np
 from keras.preprocessing import image
 import os
+from keras.models import load_model
 
-mainpath = r("D:\ALFRED - Workspace\Xray Images")
-train_datagen = ImageDataGenerator(rescale = 1./255, shear_range = 0.2, zoom_range = 0.2, horizontal_flip = True)
-training_set = train_datagen.flow_from_directory(r'D:\ALFRED - Workspace\Xray Images\train_dataset',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 class_mode = 'binary')
+mainpath = r"D:\ALFRED - Workspace"
 
-test_datagen = ImageDataGenerator(rescale = 1./255)
-test_set = test_datagen.flow_from_directory(
-    r'D:\ALFRED - Workspace\Xray Images\train_dataset', # same directory as training data
-    target_size=(64, 64),
-    batch_size=32,
-    class_mode='binary')
+def prep(mainpath):
+    train_datagen = ImageDataGenerator(rescale = 1./255, shear_range = 0.2, zoom_range = 0.2, horizontal_flip = True)
+    training_set = train_datagen.flow_from_directory(str(mainpath + "\\Xray Images\\train_dataset"),
+                                                     target_size = (64, 64),
+                                                     batch_size = 32,
+                                                     class_mode = 'binary')
 
-cnn = tf.keras.models.Sequential()
-cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', input_shape=[64, 64, 3]))
-cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
-cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu'))
-cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
-cnn.add(tf.keras.layers.Flatten())
-cnn.add(tf.keras.layers.Dense(units=128, activation='relu'))
-cnn.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
-cnn.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
-cnn.fit(x = training_set, validation_data = test_set, epochs = 25)
+    test_datagen = ImageDataGenerator(rescale = 1./255)
+    test_set = test_datagen.flow_from_directory(
+        str(mainpath + "\\Xray Images\\train_dataset"), # same directory as training data
+        target_size=(64, 64),
+        batch_size=32,
+        class_mode='binary')
+
+    return training_set, test_set
+
+def modelit(mainpath, training_set, test_set):
+    cnn = tf.keras.models.Sequential()
+    cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu', input_shape=[64, 64, 3]))
+    cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
+    cnn.add(tf.keras.layers.Conv2D(filters=32, kernel_size=3, activation='relu'))
+    cnn.add(tf.keras.layers.MaxPool2D(pool_size=2, strides=2))
+    cnn.add(tf.keras.layers.Flatten())
+    cnn.add(tf.keras.layers.Dense(units=128, activation='relu'))
+    cnn.add(tf.keras.layers.Dense(units=1, activation='sigmoid'))
+    cnn.compile(optimizer = 'adam', loss = 'binary_crossentropy', metrics = ['accuracy'])
+
+    # Modelling
+    cnn.fit(x = training_set, validation_data = test_set, epochs = 100)
+    cnn.save(str(mainpath + "\\Analytics\\model.h5"))
 
 # Single prediction
-path = r"D:\ALFRED - Workspace\Xray Images\patients_covid"
-os.chdir(path)
-for file in os.listdir():
-    test_image = image.load_img(str(path + "\\" + file), target_size = (64, 64))
-    test_image = image.img_to_array(test_image)
-    test_image = np.expand_dims(test_image, axis = 0)
+def predicting(mainpath):
+    os.chdir(str(mainpath + "\\Xray Images\\patients_covid"))
+    cnn = load_model(str(mainpath + "\\Analytics\\model.h5"))
+    for file in os.listdir():
+        test_image = image.load_img(str(mainpath + "\\Xray Images\\patients_covid\\" + file), target_size = (64, 64))
+        test_image = image.img_to_array(test_image)
+        test_image = np.expand_dims(test_image, axis = 0)
 
-    # CNN Model
-    result = cnn.predict(test_image)
+        # CNN Model
+        result = cnn.predict(test_image)
+        print(str(file), 'Predictions: %', (float)(result*100), 'NORMAL' if result < 0.5 else 'Infected')
 
-    training_set.class_indices
-    if result[0][0] == 1:
-      prediction = 'covid risk'
-    else:
-      prediction = 'NORMAL'
-    print(prediction)
+# Run IT
+predicting(mainpath)
 
-
+# Re-model?
+training_set, test_set = prep(mainpath)
+modelit(mainpath, training_set, test_set)
