@@ -1,5 +1,3 @@
-# From https://www.kaggle.com/hosseinmoradian/covid19-classification-x-ray-images
-
 # Importing Lib & tools
 import os
 import cv2
@@ -11,94 +9,39 @@ from random import shuffle
 import matplotlib.pyplot as plt
 from keras.optimizers import Adam, RMSprop
 from keras.models import Sequential, Model
-from keras.layers import  Conv2D, MaxPooling2D, Activation, Flatten,Dense, Dropout, GlobalAveragePooling2D, BatchNormalization
+from keras.layers import Conv2D, MaxPooling2D, MaxPool2D, Activation, Flatten, Dense, Dropout, GlobalAveragePooling2D, BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator, img_to_array, load_img
 from PIL import Image
 from keras.preprocessing import image
 from keras.models import load_model
+from warnings import filterwarnings
+from analytics.xray_dataload import *
+from analytics.xray_preprocesdat import preprocess_data
 
 # Filter Warnings
-warnings.filterwarnings("ignore")
+filterwarnings("ignore",category = DeprecationWarning)
+filterwarnings("ignore", category = FutureWarning) 
+filterwarnings("ignore", category = UserWarning)
 
 # File Dir
-input_path = "D:\ALFRED - Workspace\Xray Images"
+input_path = "D:\ALFRED - Workspace\Xray Images\modelling"
+
+# Data Loading
+for lbl in next(os.walk(input_path))[1]:
+    totalfile = sum_data(input_path, next(os.walk(input_path))[1][1])
+    if totalfile['totalfile'][0] != totalfile['totalfile'][1]:
+        tempfol_list = get_random_data(totalfile)
 
 # File Contents
-for _set in ['train_dataset', 'test_dataset']:
-    Normal = len(os.listdir(input_path + "\\" + _set + '\\patients_normal'))
-    Infected = len(os.listdir(input_path + "\\" +  _set + '\\patients_covid'))
-    print('The {} folder contains {} Normal and {} Infected images.'.format(_set, Normal, Infected))
+Normal = len(os.listdir(tempfol_list[2]))
+Infected = len(os.listdir(tempfol_list[0]))
+print('The folder contains {} Normal train images and {} Infected train images.'.format(Normal, Infected))
 
 # Preprocesing Data Function
-img_dims = 180
-epochs = 25
+img_dims = 80
+epochs = 10
 batch_size = 2
-def preprocess_data(input_path, img_dims, batch_size):
-    
-    # Data Augmentation for Infected & Normal Images
-    train_datagen = ImageDataGenerator(
-        rescale = 1./255,
-        zoom_range = 0.5,
-        shear_range = 0.6,      
-        rotation_range = 30,
-        width_shift_range = 0.3,
-        height_shift_range = 0.5,
-        horizontal_flip = True,
-        fill_mode='nearest')
-
-    test_datagen = ImageDataGenerator(
-        rescale = 1./255)
-    
-    train_images = train_datagen.flow_from_directory(
-        directory = input_path + '\\train_dataset', 
-        target_size = (img_dims, img_dims), 
-        batch_size = batch_size, 
-        class_mode = 'binary')
-
-    test_images = test_datagen.flow_from_directory(
-        directory = input_path + '\\test_dataset', 
-        target_size = (img_dims, img_dims), 
-        batch_size = batch_size, 
-        class_mode = 'binary')
-
-    # Creating these lists for make prediction on test image and showing confusion matrix.
-    train_labels = []
-    test_labels = []
-    label = ''
-
-    for file_name in ['\\patients_normal\\', '\\patients_covid\\']:
-        for img in (os.listdir(input_path + '\\train_dataset' + file_name)):
-            img = cv2.imread(input_path + '\\train_dataset' + file_name + img, cv2.IMREAD_GRAYSCALE)
-            img = cv2.resize(img, (img_dims, img_dims))
-            img = np.dstack([img, img, img])
-            img = img.astype('float32') / 255
-            if file_name == '/patients_normal/':
-                label = 0
-            elif file_name == '/patients_covid/':
-                label = 1
-            train_labels.append(label)            
-            
-            
-    for file_name in ['\\patients_normal\\', '\\patients_covid\\']:
-        for img in (os.listdir(input_path + '\\test_dataset' + file_name)):
-            img = cv2.imread(input_path + '\\test_dataset' + file_name + img, cv2.IMREAD_GRAYSCALE)
-            img = cv2.resize(img, (img_dims, img_dims))
-            img = np.dstack([img, img, img])
-            img = img.astype('float32') / 255
-            if file_name == '/patients_normal/':
-                label = 0
-            elif file_name == '/patients_covid/':
-                label = 1
-            test_labels.append(label)
-        
-    train_labels = np.array(train_labels)
-    test_labels = np.array(test_labels)
-    
-    return train_images, train_labels, test_images, test_labels
-
-# Set Images&Labels for Train,Test
 train_images, train_labels, test_images, test_labels = preprocess_data(input_path, img_dims, batch_size)
-#print(test_labels)
 
 # Create Model with KERAS library
 model = Sequential()
@@ -111,7 +54,6 @@ model.add(MaxPooling2D(2,2))
 model.add(Conv2D(128, (3,3), activation="relu"))
 model.add(MaxPooling2D(2,2))
 model.add(Conv2D(256, (3,3), activation="relu"))
-model.add(MaxPooling2D(2,2))
 model.add(Flatten())
 model.add(Dense(512, activation="relu"))
 model.add(Dropout(0.5))
@@ -119,7 +61,7 @@ model.add(Dense(1,activation="sigmoid"))
 model.summary()
 
 # Set Optimizer
-optimizer = Adam(lr = 0.0001)
+optimizer = Adam(lr = 0.00001)
 
 # Compile Model
 model.compile( optimizer= optimizer,loss='binary_crossentropy', metrics=['acc'])
