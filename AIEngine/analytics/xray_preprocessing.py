@@ -55,25 +55,23 @@ filterwarnings("ignore",category = DeprecationWarning)
 filterwarnings("ignore", category = FutureWarning) 
 filterwarnings("ignore", category = UserWarning)
 
-path = Path("D:\ALFRED - Workspace\Xray Images")
+path = "D:\\ALFRED - Workspace\\Xray Images\\RUN_20210528\\train_dataset"
 diag_code_dict = {
     'COVID': 0,
-    'Lung_Opacity': 1,
-    'Normal': 2,
-    'Viral Pneumonia': 3}
+    'Normal': 1
+    }
 
 diag_title_dict = {
     'COVID': 'patients_covid',
-    'Lung_Opacity': 'patients_lungopacity',
-    'Normal': 'patients_normal',
-    'Viral Pneumonia': 'patients_viralpneumonia'}
+    'Normal': 'patients_normal'
+    }
 
 imageid_path_dict = {os.path.splitext(os.path.basename(x))[0]: x for x in glob(os.path.join(path, '*','*.png'))}
 covidData = pd.DataFrame.from_dict(imageid_path_dict, orient = 'index').reset_index()
 covidData.columns = ['image_id','path']
 classes = covidData.image_id.str.split('-').str[0]
 covidData['diag'] = classes
-covidData['target'] = covidData['diag'].map(diag_code_dict.get) 
+covidData['target'] = covidData['diag'].map(diag_code_dict.get)
 covidData['Class'] = covidData['diag'].map(diag_title_dict.get)
 samples,features = covidData.shape
 duplicated = covidData.duplicated().sum()
@@ -97,7 +95,7 @@ plt.xticks(rotation=0,fontsize = 12)
 ax.set_xlabel('Sample Type - Diagnosis',fontsize = 14,weight = 'bold')
 ax.set(yticklabels=[])
 ax.axes.get_yaxis().set_visible(False) 
-plt.title('Number of Samples per Class', fontsize = 16,weight = 'bold');
+plt.title('Number of Samples per Class', fontsize = 16,weight = 'bold')
 #Plot numbers
 for p in ax.patches:
     ax.annotate("%.1f%%" % (100*float(p.get_height()/samples)), (p.get_x() + p.get_width() / 2., abs(p.get_height())),
@@ -213,6 +211,7 @@ ax = sns.displot(data = imageEDA, x = 'max', kind="kde", hue = 'Class');
 plt.title('Images Colour Max Value Distribution by Class', fontsize = 16,weight = 'bold');
 ax = sns.displot(data = imageEDA, x = 'min', kind="kde", hue = 'Class');
 plt.title('Images Colour Min Value Distribution by Class', fontsize = 16,weight = 'bold');
+plt.show()
 
 '''
 - The distribution plot of the whole dataset is very similar to the individual Healthy and Lung Opacity images,
@@ -238,7 +237,8 @@ sns.despine(top=True, right=True, left=False, bottom=False)
 plt.xticks(rotation=0,fontsize = 12)
 ax.set_xlabel('Image Channel Colour Mean',fontsize = 14,weight = 'bold')
 ax.set_ylabel('Image Channel Colour Standard Deviation',fontsize = 14,weight = 'bold')
-plt.title('Mean and Standard Deviation of Image Samples', fontsize = 16,weight = 'bold');
+plt.title('Mean and Standard Deviation of Image Samples', fontsize = 16,weight = 'bold')
+plt.show()
 
 '''
 Most images are gathered in the central region of the scatter plot, i.e. there is not much contrast between their pixel values
@@ -280,6 +280,7 @@ plt.title('Mean and Standard Deviation of Image Samples - 10% of Data', fontsize
 for x0, y0, path in zip(DF_sample['mean'], DF_sample['stedev'],paths):
     ab = AnnotationBbox(getImage(path), (x0, y0), frameon=False)
     ax.add_artist(ab)
+plt.show()
 
 '''
 Even though we could use our imagination to understand what it meant to have high or low mean values,
@@ -302,7 +303,9 @@ Confusion Matrix, Accuracy, Precision, Recall and F-Score are analysed for final
 
 #add the path general where the classes subpath are allocated
 path = Path("D:\ALFRED - Workspace\Xray Images")
-classes=["patients_covid", "patients_lungopacity", "patients_normal", "patients_viralpneumonia"]
+trainpath = "D:\\ALFRED - Workspace\\Xray Images\\RUN_20210528\\train_dataset"
+testpath = "D:\\ALFRED - Workspace\\Xray Images\RUN_20210528\\test_dataset"
+classes=["patients_covid", "patients_normal"]
 num_classes = len(classes)
 batch_size=32
 
@@ -315,7 +318,7 @@ train_datagen = ImageDataGenerator(rescale=1./255,
 val_datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
 
 # load the images to training
-train_gen = train_datagen.flow_from_directory(directory=path, 
+train_gen = train_datagen.flow_from_directory(directory=trainpath, 
                                               target_size=(299, 299),
                                               class_mode='categorical',
                                               subset='training',
@@ -324,7 +327,7 @@ train_gen = train_datagen.flow_from_directory(directory=path,
                                               color_mode="grayscale")
 
 # load the images to test
-test_gen = val_datagen.flow_from_directory(directory=path, 
+test_gen = val_datagen.flow_from_directory(directory=testpath, 
                                               target_size=(299, 299),
                                               class_mode='categorical',
                                               subset='validation',
@@ -376,7 +379,7 @@ Even though I did not use any optimised hyperparameters tuning, the batch_size w
 
 # Model settings and training
 # Model Parameters
-epochs = 1000
+epochs = 10
 batch_size = 16
 
 # Callbacks
