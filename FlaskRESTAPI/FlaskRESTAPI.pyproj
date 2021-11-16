@@ -79,6 +79,7 @@
     <Folder Include="FlaskRESTAPI\helper\" />
     <Folder Include="FlaskRESTAPI\message_sender\" />
     <Folder Include="FlaskRESTAPI\models\" />
+    <Folder Include="FlaskRESTAPI\webpages\" />
     <Folder Include="FlaskRESTAPI\response\" />
     <Folder Include="FlaskRESTAPI\routes\" />
     <Folder Include="FlaskRESTAPI\routes\ocr\" />

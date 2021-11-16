@@ -238,6 +238,7 @@
     <Folder Include="workflow\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="requirements.txt" />
     <Content Include="rpa_logs\rpa_log_2021_04_09_09_02_19_769.log" />
     <Content Include="selenium_interface\chromedriver.exe" />
     <Content Include="selenium_interface\geckodriver.exe" />
