@@ -30,10 +30,7 @@ def create_app(test_config=None):
   env = sys.argv[1] if len(sys.argv) > 1 else 'development'
   config_dict = {
     'local': 'config.LocalConfig',
-    'development': 'config.DevelopmentConfig',
-    'uat': 'config.UATConfig',
-    'production': 'config.ProductionConfig',
-    'demo' : 'config.DemoConfig'
+    'development': 'config.DevelopmentConfig'
   }
   config = config_dict[env]
   app.config.from_object(config)
@@ -51,9 +48,7 @@ def create_app(test_config=None):
                                mediclinic, print_listing, data_migration_client_master, mediclinic_crm, credit_control,
                                data_migration_disbursement_master, data_migration_req, dm_stp,
                                finance_update_max, mediclinic_kpi)
-    #from FlaskRESTAPI.routes.ocr import img_clsfctn_api
     from FlaskRESTAPI.decorators import before_request, after_request
     
     db.create_all()
-    #print('tables created')
     return app
