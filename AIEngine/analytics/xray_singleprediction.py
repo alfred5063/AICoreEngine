@@ -3,20 +3,17 @@
 import numpy as np
 import pandas as pd
 import tensorflow as tf
-import cv2
-from keras.preprocessing.image import ImageDataGenerator
-from keras.metrics import categorical_accuracy
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.metrics import categorical_accuracy
 import matplotlib.pyplot as plt
-import pandas as pd
-import numpy as np
-from keras.preprocessing import image
+from tensorflow.keras.preprocessing import image
 import os, time
-from keras.models import load_model
-from keras.optimizers import Adam
-from keras.optimizers import RMSprop
-from analytics.xray_dataload import *
+from tensorflow.keras.models import load_model
+from tensorflow.keras.optimizers import Adam
+from backend.loading.xray_dataload import *
 from datetime import datetime
-from keras.callbacks import ModelCheckpoint, EarlyStopping, TensorBoard
+import os.path
+
 
 mainpath = r"D:\ALFRED - Workspace\Xray Images"
 data_type = ['train_dataset', 'test_dataset']
@@ -134,7 +131,7 @@ def modelit(currentpath, mainpath, training_set, test_set, steps_per_epoch, val_
                       validation_data = test_set,
                       validation_steps = val_steps,
                       verbose = True)
-    cnn.save("D:\\ALFRED - Workspace\\Analytics\\model.h5")
+    cnn.save("D:\\decodevid\\model\\model.h5")
 
     # Evaluating the result
     acc = history.history['accuracy']
@@ -184,7 +181,14 @@ def predicting(mainpath, label):
     else:
         img_path = str(mainpath)
         os.chdir(str(mainpath))
-    cnn = load_model("D:\\ALFRED - Workspace\\Analytics\\model.h5")
+    if os.path.isfile("D:\\ALFRED - Workspace\\Analytics\\model.h5") == True:
+        try:
+            cnn = load_model("D:\\ALFRED - Workspace\\Analytics\\model.h5")
+        except Exception as error:
+            print("Model cannot be loaded with error message as: %s", error)
+    else:
+        print("Path to model does not exist.")
+    
     for file in os.listdir():
         if label != 'None':
             test_image = image.load_img(str(mainpath + "\\" + label + "\\" + file), target_size = (128, 128))
@@ -194,16 +198,22 @@ def predicting(mainpath, label):
         test_image = np.expand_dims(test_image, axis = 0)
 
         # CNN Model
-        result = cnn.predict(test_image)
-        resultline = img_path + "\\" + str(file), str(file), 'Predictions: %', (np.any(result)*100).astype(float), 'Normal' if np.any(result) < 0.5 else 'Infected'
-        final_result.append(resultline)
-        print(str(file), 'Predictions: %', (np.any(result)*100).astype(float), 'Normal' if np.any(result) < 0.5 else 'Infected')
+        try:
+            result = cnn.predict(test_image)
+            #resultline = img_path + "\\" + str(file), str(file), 'Predictions: %', (np.any(result)*100).astype(float), 'Normal' if np
+            resultline = img_path + "\\" + str(file), str(file), 'Predictions: %', float(result*100), 'Normal' if float(result) < 0.5 else 'Infected'
+            final_result.append(resultline)
+            print(str(file), 'Predictions: %', float(result*100), 'Normal' if float(result) < float(0.5) else 'Infected')
+        except:
+            pass
+        continue
+    
     final_resultdf = pd.DataFrame(final_result)
-    if label != 'None':
-        final_resultdf.to_csv(str(mainpath + "\\" + label + "\\final_resultdf.csv"))
-    else:
-        final_resultdf.to_csv(str(mainpath + "\\final_resultdf.csv"))
-    return final_result
+    #if label != 'None':
+    #    final_resultdf.to_csv(str(mainpath + "\\" + label + "\\final_resultdf.csv"))
+    #else:
+    #    final_resultdf.to_csv(str(mainpath + "\\final_resultdf.csv"))
+    return final_resultdf
 def assessment(mainpath, patients):
 
     final_resultdf = []
@@ -274,7 +284,7 @@ currentpath, list, labels, totalfile = loadata(mainpath, run_date, data_type)
 training_set, test_set, steps_per_epoch, val_steps = prep(currentpath, data_type, batch_size)
 e = 5
 epochdf_final = pd.DataFrame()
-while e <= 100:
+while e <= 5:
     acc, val_acc, loss, val_loss, keras_score, epochdf = modelit(currentpath, mainpath, training_set, test_set, steps_per_epoch, val_steps, e)
     epochdf_final = epochdf_final.append(epochdf, ignore_index = True)
     e += 5
@@ -283,23 +293,32 @@ epochdf_final = epochdf_final.drop(columns = {'index'}).drop_duplicates(subset =
 epochdf_final.to_csv(currentpath + "\\Epoch_" + str(e) + "_final_resultdf.csv")
 
 # Run IT
-types = ['patients_bacterialpneumonia',
-'patients_lungopacity',
-'patients_normal',
-'patients_pneumonia',
-'patients_viralpneumonia']
+final_result = []
+types = ['Re-modelling'
+         #'patients_bacterialpneumonia',
+         #'patients_lungopacity',
+         #'patients_normal',
+         #'patients_pneumonia',
+         #'patients_viralpneumonia'
+         ]
 for t in range(len(types)):
     try:
         final_result = predicting(mainpath, str(types[t]))
+        if final_result.empty != True:
+            final_resultdf = pd.DataFrame(final_result)
+            final_resultdf.to_csv(mainpath + "\\" + str(types[t]) + "_prediction_result.csv")
+        else:
+            print(str(types[t]) + " failed 1")
+            pass
     except:
+        print(str(types[t]) + " failed 2")
         pass
     continue
-    final_resultdf = pd.DataFrame(final_result)
-    final_resultdf.to_csv(currentpath + "\\" + str(types[t]) + "_prediction_result.csv")
 
 # Re-assessments
 current_year, current_timestamp, run_date = getdate()
 infected, infected_df, normal, normal_df, final_resultdf = assessment(mainpath, 'patients_covid')
 infected_dir, normal_dir, analyzed_dir = gettransf_images(mainpath, currentpath, infected_df, normal_df, 'patients_covid', run_date)
 coviddata = rgb_analysis(analyzed_dir, final_resultdf)
-final_result = predicting(infected_dir, 'None')
+final_result = predicting(infected_dir, 'None')# -*- coding: utf-8 -*-
+

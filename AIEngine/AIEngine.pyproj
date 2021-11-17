@@ -12,7 +12,7 @@
     <OutputPath>.</OutputPath>
     <Name>AIEngine</Name>
     <RootNamespace>AIEngine</RootNamespace>
-    <InterpreterId>CondaEnv|CondaEnv|myenvr</InterpreterId>
+    <InterpreterId>Global|VisualStudio|decodevid</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -251,7 +251,7 @@
     <Content Include="utils\smalllogo.png" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="CondaEnv|CondaEnv|myenvr" />
+    <InterpreterReference Include="Global|VisualStudio|decodevid" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

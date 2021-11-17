@@ -18,7 +18,7 @@
     <SuppressCollectPythonCloudServiceFiles>true</SuppressCollectPythonCloudServiceFiles>
     <Name>FlaskRESTAPI</Name>
     <RootNamespace>FlaskRESTAPI</RootNamespace>
-    <InterpreterId>CondaEnv|CondaEnv|myenvr</InterpreterId>
+    <InterpreterId>Global|VisualStudio|decodevid</InterpreterId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -119,7 +119,7 @@
     <Content Include="FlaskRESTAPI\templates\layout.html" />
   </ItemGroup>
   <ItemGroup>
-    <InterpreterReference Include="CondaEnv|CondaEnv|myenvr" />
+    <InterpreterReference Include="Global|VisualStudio|decodevid" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.Web.targets" />
   <!-- Specify pre- and post-build commands in the BeforeBuild and 
